@@ -21,7 +21,7 @@
         {
             SplitFullItemPath(item.Path, out string folderPath, out string itemName);
             var directParentOfNewNode = folderPath.Length == 0 ? _root : CreateFoldersInPathIfNecessary(folderPath);
-            directParentOfNewNode.CreateChildItem(itemName, item.Value, item.SearchName);
+            directParentOfNewNode.CreateChildItem(itemName, item.Value, item.SearchName, item.Icon);
         }
 
         private static void SplitFullItemPath(string nodePath, out string namespaceName, out string typeName)

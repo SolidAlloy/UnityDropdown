@@ -26,7 +26,7 @@
 
         public abstract DropdownNode SelectedNode { get; }
 
-        public abstract string[] SelectionPaths { get; }
+        public abstract (string Path, bool HasIcon)[] SelectionPaths { get; }
 
         public bool DrawInSearchMode { get; private set; }
 

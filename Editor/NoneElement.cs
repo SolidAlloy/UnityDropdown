@@ -9,7 +9,7 @@
     internal class NoneElement<T> : DropdownNode<T>
     {
         private NoneElement(DropdownNode<T> root, DropdownTree<T> parentTree)
-            : base(default, root, parentTree, DropdownWindow.NoneElementName, null) { }
+            : base(default, root, parentTree, DropdownWindow.NoneElementName, null, null) { }
 
         public static NoneElement<T> Create(DropdownTree<T> parentTree)
         {

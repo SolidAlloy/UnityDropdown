@@ -14,14 +14,15 @@
         private Rect _positionOnCreation;
         private bool _positionWasSetAfterCreation;
 
-        public static float CalculateOptimalWidth(string[] selectionPaths)
+        public static float CalculateOptimalWidth((string Path, bool HasIcon)[] selectionPaths)
         {
             float windowWidth = PopupHelper.CalculatePopupWidth(
                 selectionPaths,
                 DropdownStyle.DefaultLabelStyle,
                 (int) DropdownStyle.GlobalOffset,
                 (int) DropdownStyle.IndentWidth,
-                false);
+                false,
+                (int) DropdownStyle.IconSize);
 
             return windowWidth < DropdownStyle.MinWindowWidth ? DropdownStyle.MinWindowWidth : windowWidth;
         }

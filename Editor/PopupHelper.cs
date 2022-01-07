@@ -41,7 +41,7 @@
         ///     false);
         /// </code></example>
         [PublicAPI]
-        public static int CalculatePopupWidth(string[] items, GUIStyle style, int globalOffsetWidth, int indentWidth, bool flatTree)
+        public static int CalculatePopupWidth((string Path, bool HasIcon)[] items, GUIStyle style, int globalOffsetWidth, int indentWidth, bool flatTree, int iconWidth)
         {
             // The method utilizes ReadOnlySpan<char> to iterate over items to reduce memory allocations.
             // The goal is to find the longest string in the tree so that is is fully visible when the list is scrolled.
@@ -55,12 +55,14 @@
             if (items.Length == 0)
                 return 0;
 
-            float charsPerIndent = GetCharsPerIndent(indentWidth, style);
+            float charsPerIndent = GetCharsInScreenSegment(indentWidth, style);
+            float charsPerIcon = GetCharsInScreenSegment(iconWidth, style);
+
             Item maxItem = default;
 
-            foreach (string item in items)
+            foreach ((string item, bool hasIcon) in items)
             {
-                Item itemStruct = GetMaxPart(item, charsPerIndent, flatTree);
+                Item itemStruct = GetMaxPart(item, charsPerIndent, flatTree, hasIcon, charsPerIcon);
 
                 if (itemStruct > maxItem)
                 {
@@ -68,25 +70,25 @@
                 }
             }
 
-            return maxItem.GetStringWidthInPixels(style, indentWidth) + globalOffsetWidth + ScrollbarWidth + RightIndent;
+            return maxItem.GetStringWidthInPixels(style, indentWidth, iconWidth) + globalOffsetWidth + ScrollbarWidth + RightIndent;
         }
 
-        private static float GetCharsPerIndent(int indentWidth, GUIStyle style)
+        private static float GetCharsInScreenSegment(int widthInPixels, GUIStyle style)
         {
             const string testString = "test";
             GUIContent testContent = TempContent(testString);
             float contentWidth = style.CalcSize(testContent).x;
-            return indentWidth / contentWidth * testString.Length;
+            return widthInPixels / contentWidth * testString.Length;
         }
 
-        private static Item GetMaxPart(string item, float charsPerIndent, bool flatTree)
+        private static Item GetMaxPart(string item, float charsPerIndent, bool flatTree, bool hasIcon, float charsPerIcon)
         {
             int partIndent = 0;
             var itemSpan = item.AsSpan();
             int itemLength = item.Length;
 
             if (flatTree)
-                return new Item(itemSpan, partIndent, charsPerIndent, itemLength);
+                return new Item(itemSpan, partIndent, charsPerIndent, itemLength, hasIcon, charsPerIcon);
 
             // Iterates over an item, splits it in parts by Separator and checks the length of every part.
             // Returns the length of the longest part.
@@ -102,8 +104,7 @@
 
                 int length = i - previousSeparatorIndex;
 
-                var part = new Item(itemSpan.Slice(previousSeparatorIndex, length), partIndent,
-                    charsPerIndent, length);
+                var part = new Item(itemSpan.Slice(previousSeparatorIndex, length), partIndent, charsPerIndent, length, false, charsPerIcon);
 
                 previousSeparatorIndex = i + 1;
                 partIndent++;
@@ -116,8 +117,7 @@
 
             int lastLength = i - previousSeparatorIndex;
 
-            var lastPart = new Item(itemSpan.Slice(previousSeparatorIndex, lastLength), partIndent,
-                charsPerIndent, lastLength);
+            var lastPart = new Item(itemSpan.Slice(previousSeparatorIndex, lastLength), partIndent, charsPerIndent, lastLength, hasIcon, charsPerIcon);
 
             if (lastPart > maxPart)
             {
@@ -132,15 +132,17 @@
             private readonly ReadOnlySpan<char> _span;
             private readonly int _indent;
             private readonly float _charsNumber;
+            private readonly bool _hasIcon;
 
-            public Item(ReadOnlySpan<char> span, int indent, float charsPerIndent, int spanLength)
+            public Item(ReadOnlySpan<char> span, int indent, float charsPerIndent, int spanLength, bool hasIcon, float charsPerIcon)
             {
                 _span = span;
                 _indent = indent;
+                _hasIcon = hasIcon;
 
                 // span.Length creates a defensive copy. Since we slice a span before passing it into the struct,
                 // we already know its length and passing it as a parameter is cheaper.
-                _charsNumber = spanLength + charsPerIndent * _indent;
+                _charsNumber = spanLength + charsPerIndent * _indent + (_hasIcon ? charsPerIcon : 0f);
             }
 
             public static bool operator >(Item left, Item right) => left._charsNumber > right._charsNumber;
@@ -149,11 +151,11 @@
 
             [SuppressMessage("ReSharper", "EPS06",
                 Justification = "The method is called only once, so creating a defensive copy is alright")]
-            public int GetStringWidthInPixels(GUIStyle style, int indentWidth)
+            public int GetStringWidthInPixels(GUIStyle style, int indentWidth, int iconWidth)
             {
                 GUIContent itemContent = TempContent(_span.ToString());
                 int stringWidth = (int) style.CalcSize(itemContent).x;
-                return stringWidth + _indent * indentWidth;
+                return stringWidth + _indent * indentWidth + (_hasIcon ? iconWidth : 0);
             }
         }
     }

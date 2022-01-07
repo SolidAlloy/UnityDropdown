@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using UnityEngine;
 
     public class DropdownNode<T> : DropdownNode
     {
@@ -15,8 +16,8 @@
         public readonly List<DropdownNode<T>> ChildNodes = new List<DropdownNode<T>>();
         protected override IReadOnlyCollection<DropdownNode> _ChildNodes => ChildNodes;
 
-        protected DropdownNode(T value, DropdownNode<T> parentNode, DropdownTree<T> parentTree, string name, string searchName)
-            : base(parentNode, name, searchName)
+        protected DropdownNode(T value, DropdownNode<T> parentNode, DropdownTree<T> parentTree, string name, string searchName, Texture icon)
+            : base(parentNode, name, searchName, icon)
         {
             Value = value;
             ParentNode = parentNode;
@@ -27,15 +28,15 @@
         /// <summary>Creates a root node that does not have a parent and does not show up in the popup.</summary>
         /// <param name="parentTree">The tree this node belongs to.</param>
         /// <returns>The root node.</returns>
-        public static DropdownNode<T> CreateRoot(DropdownTree<T> parentTree) => new DropdownNode<T>(default, null, parentTree, string.Empty, null);
+        public static DropdownNode<T> CreateRoot(DropdownTree<T> parentTree) => new DropdownNode<T>(default, null, parentTree, string.Empty, null, null);
 
         /// <summary>Creates a dropdown item that represents a <see cref="System.Type"/>.</summary>
         /// <param name="name">Name that will show up in the popup.</param>
         /// <param name="value">The value this node represents.</param>
         /// <param name="searchName"> A name of the node that will show up when a search is performed.</param>
-        public void CreateChildItem(string name, T value, string searchName)
+        public void CreateChildItem(string name, T value, string searchName, Texture icon)
         {
-            var child = new DropdownNode<T>(value, this, _parentTree, name, searchName);
+            var child = new DropdownNode<T>(value, this, _parentTree, name, searchName, icon);
             ChildNodes.Add(child);
         }
 
@@ -44,7 +45,7 @@
         /// <returns>A <see cref="DropdownNode"/> instance that represents the folder.</returns>
         public DropdownNode<T> CreateChildFolder(string name)
         {
-            var child = new DropdownNode<T>(default, this, _parentTree, name, null);
+            var child = new DropdownNode<T>(default, this, _parentTree, name, null, null);
             ChildNodes.Add(child);
             return child;
         }

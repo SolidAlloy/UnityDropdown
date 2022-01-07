@@ -6,7 +6,7 @@
     using UnityEditor;
     using UnityEngine;
 
-    public enum DropdownWindowType { Dropdown, Popup }
+    public enum DropdownWindowType { Context, Popup }
 
     /// <summary>Creates a dropdown window that shows the <see cref="DropdownTree"/> elements.</summary>
     public partial class DropdownWindow : EditorWindow
@@ -29,7 +29,7 @@
 
             return windowType switch
             {
-                DropdownWindowType.Dropdown => GUIUtility.GUIToScreenPoint(Event.current.mousePosition),
+                DropdownWindowType.Context => GUIUtility.GUIToScreenPoint(Event.current.mousePosition),
                 DropdownWindowType.Popup => GetCenteredPosition(dropdownTree),
                 _ => throw new NotImplementedException()
             };
@@ -60,7 +60,7 @@
 
             _positionOnCreation = GetWindowRect(windowPosition, windowHeight);
 
-            if (windowType == DropdownWindowType.Dropdown)
+            if (windowType == DropdownWindowType.Context)
             {
                 // ShowAsDropDown usually shows the window under a button, but since we don't need to align the window to
                 // any button, we set buttonRect.height to 0f.

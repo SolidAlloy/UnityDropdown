@@ -15,6 +15,7 @@
     {
         protected readonly string _name;
         private readonly DropdownNode _parentNode;
+        private readonly Texture _icon;
         private bool _expanded;
 
         private Rect _rect;
@@ -44,12 +45,13 @@
 
         private bool IsHoveredOver => _rect.Contains(Event.current.mousePosition);
 
-        protected DropdownNode(DropdownNode parentNode, string name, string searchName)
+        protected DropdownNode(DropdownNode parentNode, string name, string searchName, Texture icon)
         {
             _parentNode = parentNode;
             Assert.IsNotNull(name);
             _name = name;
             SearchName = searchName;
+            _icon = icon;
         }
 
         public IEnumerable<DropdownNode> GetParentNodesRecursive(
@@ -68,6 +70,7 @@
         public virtual void DrawSelfAndChildren(int indentLevel, Rect visibleRect)
         {
             Draw(indentLevel, visibleRect);
+
             if ( ! Expanded)
                 return;
 
@@ -181,7 +184,7 @@
             Rect labelRect = indentedNodeRect.AlignMiddleVertically(DropdownStyle.LabelHeight);
             string label = ParentTree.DrawInSearchMode ? SearchName : _name;
             GUIStyle style = IsSelected ? DropdownStyle.SelectedLabelStyle : DropdownStyle.DefaultLabelStyle;
-            GUI.Label(labelRect, label, style);
+            GUI.Label(labelRect, GUIContentHelper.Temp(label, _icon), style);
         }
 
         private void DrawSeparator()

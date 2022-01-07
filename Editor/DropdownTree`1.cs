@@ -12,7 +12,7 @@
         private readonly DropdownNode<T> _root;
         private readonly IEqualityComparer<T> _customComparer;
 
-        public sealed override string[] SelectionPaths { get; }
+        public sealed override (string Path, bool HasIcon)[] SelectionPaths { get; }
 
         private DropdownNode<T> _selectedNode;
         public override DropdownNode SelectedNode => _selectedNode;
@@ -49,11 +49,13 @@
             SetSelection(items, currentValue);
             _onValueSelected = onValueSelected;
 
-            SelectionPaths = new string[items.Count];
+            SelectionPaths = new (string Path, bool HasIcon)[items.Count];
 
             for (int i = 0; i < SelectionPaths.Length; i++)
             {
-                SelectionPaths[i] = items[i].Path;
+                var item = items[i];
+                // comparing to null using 'is' to bypass the overloaded comparison behaviour which takes more time but is not useful here.
+                SelectionPaths[i] = (item.Path, !(item.Icon is null));
             }
         }
 
