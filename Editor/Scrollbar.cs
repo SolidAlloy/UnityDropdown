@@ -16,7 +16,7 @@
         private Rect _wholeListRect;
         private Rect _windowRect;
 
-        private SelectionNode _nodeToScrollTo;
+        private DropdownNode _nodeToScrollTo;
         private NodePosition _nodePosition;
 
         private static bool ScrollCannotBePerformed => Event.current.type != EventType.Repaint;
@@ -37,7 +37,7 @@
 
         /// <summary>Ask scrollbar to start moving to a node. The process can take several frames.</summary>
         /// <param name="node">The node to scroll to.</param>
-        public void RequestScrollToNode(SelectionNode node, NodePosition nodePosition)
+        public void RequestScrollToNode(DropdownNode node, NodePosition nodePosition)
         {
             if (node == null)
                 return;
@@ -45,7 +45,7 @@
             _nodeToScrollTo = node;
             _nodePosition = nodePosition;
 
-            foreach (SelectionNode parentNode in node.GetParentNodesRecursive(false))
+            foreach (DropdownNode parentNode in node.GetParentNodesRecursive(false))
                 parentNode.Expanded = true;
 
             if (ScrollCannotBePerformed)

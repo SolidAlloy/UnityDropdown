@@ -4,7 +4,7 @@
     using SolidUtilities.Editor.Extensions;
     using UnityEngine;
 
-    public partial class SelectionTree<T>
+    public partial class DropdownTree<T>
     {
         #region KeyboardEvents
 
@@ -188,7 +188,7 @@
             return true;
         }
 
-        private bool IsExpandedFolder(SelectionNode<T> previousNode)
+        private bool IsExpandedFolder(DropdownNode<T> previousNode)
         {
             return previousNode.IsFolder && previousNode.Expanded && previousNode.ChildNodes.Count != 0;
         }

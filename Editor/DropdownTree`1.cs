@@ -6,40 +6,42 @@
     using SolidUtilities;
     using UnityEngine;
 
-    public partial class SelectionTree<T> : SelectionTree
+    public partial class DropdownTree<T> : DropdownTree
     {
         private readonly Action<T> _onValueSelected;
-        private readonly SelectionNode<T> _root;
+        private readonly DropdownNode<T> _root;
         private readonly IEqualityComparer<T> _customComparer;
 
         public sealed override string[] SelectionPaths { get; }
 
-        private SelectionNode<T> _selectedNode;
-        public override SelectionNode SelectedNode => _selectedNode;
+        private DropdownNode<T> _selectedNode;
+        public override DropdownNode SelectedNode => _selectedNode;
 
         private readonly NoneElement<T> _noneElement;
-        protected override SelectionNode NoneElement => _noneElement;
+        protected override DropdownNode NoneElement => _noneElement;
 
-        private readonly List<SelectionNode<T>> _searchModeTree = new List<SelectionNode<T>>();
-        protected override IReadOnlyCollection<SelectionNode> SearchModeTree => _searchModeTree;
+        private readonly List<DropdownNode<T>> _searchModeTree = new List<DropdownNode<T>>();
+        protected override IReadOnlyCollection<DropdownNode> SearchModeTree => _searchModeTree;
 
-        protected override IReadOnlyCollection<SelectionNode> Nodes => _root.ChildNodes;
+        protected override IReadOnlyCollection<DropdownNode> Nodes => _root.ChildNodes;
 
-        public SelectionTree(
-            IList<SelectionTreeItem<T>> items,
+        public DropdownTree(
+            IList<DropdownItem<T>> items,
             T currentValue,
             Action<T> onValueSelected,
             int searchbarMinItemsCount = 10,
+            bool sortItems = false,
             bool hideNoneElement = true,
             IEqualityComparer<T> customComparer = null)
             : base(items.Count, searchbarMinItemsCount)
         {
-            _root = SelectionNode<T>.CreateRoot(this);
+            _root = DropdownNode<T>.CreateRoot(this);
 
             if ( ! hideNoneElement)
                 _noneElement = NoneElement<T>.Create(this);
 
-            Sedgewick.SortInPlace(items);
+            if (sortItems)
+                Sedgewick.SortInPlace(items);
 
             FillTreeWithItems(items);
 
@@ -61,7 +63,7 @@
             _onValueSelected?.Invoke(_selectedNode.Value);
         }
 
-        public void SetSelectedNode(SelectionNode<T> selectionNode) => _selectedNode = selectionNode;
+        public void SetSelectedNode(DropdownNode<T> dropdownNode) => _selectedNode = dropdownNode;
 
         protected override void InitializeSearchModeTree()
         {
@@ -78,11 +80,11 @@
                 .Select(x => x.item));
         }
 
-        protected override IEnumerable<SelectionNode> EnumerateTree() => EnumerateTreeTyped();
+        protected override IEnumerable<DropdownNode> EnumerateTree() => EnumerateTreeTyped();
 
-        private IEnumerable<SelectionNode<T>> EnumerateTreeTyped() => _root.GetChildNodesRecursive();
+        private IEnumerable<DropdownNode<T>> EnumerateTreeTyped() => _root.GetChildNodesRecursive();
 
-        private void SetSelection(IList<SelectionTreeItem<T>> items, T selectedValue)
+        private void SetSelection(IList<DropdownItem<T>> items, T selectedValue)
         {
             if (selectedValue == null)
             {
@@ -92,7 +94,7 @@
 
             ReadOnlySpan<char> nameOfItemToSelect = default;
 
-            foreach (SelectionTreeItem<T> item in items)
+            foreach (DropdownItem<T> item in items)
             {
                 if ((_customComparer ?? EqualityComparer<T>.Default).Equals(selectedValue, item.Value))
                     nameOfItemToSelect = item.Path.AsSpan();

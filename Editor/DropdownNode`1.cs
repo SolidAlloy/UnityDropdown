@@ -4,18 +4,18 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class SelectionNode<T> : SelectionNode
+    public class DropdownNode<T> : DropdownNode
     {
         public readonly T Value;
-        public readonly SelectionNode<T> ParentNode;
+        public readonly DropdownNode<T> ParentNode;
 
-        private readonly SelectionTree<T> _parentTree;
-        protected override SelectionTree ParentTree => _parentTree;
+        private readonly DropdownTree<T> _parentTree;
+        protected override DropdownTree ParentTree => _parentTree;
 
-        public readonly List<SelectionNode<T>> ChildNodes = new List<SelectionNode<T>>();
-        protected override IReadOnlyCollection<SelectionNode> _ChildNodes => ChildNodes;
+        public readonly List<DropdownNode<T>> ChildNodes = new List<DropdownNode<T>>();
+        protected override IReadOnlyCollection<DropdownNode> _ChildNodes => ChildNodes;
 
-        protected SelectionNode(T value, SelectionNode<T> parentNode, SelectionTree<T> parentTree, string name, string searchName)
+        protected DropdownNode(T value, DropdownNode<T> parentNode, DropdownTree<T> parentTree, string name, string searchName)
             : base(parentNode, name, searchName)
         {
             Value = value;
@@ -27,7 +27,7 @@
         /// <summary>Creates a root node that does not have a parent and does not show up in the popup.</summary>
         /// <param name="parentTree">The tree this node belongs to.</param>
         /// <returns>The root node.</returns>
-        public static SelectionNode<T> CreateRoot(SelectionTree<T> parentTree) => new SelectionNode<T>(default, null, parentTree, string.Empty, null);
+        public static DropdownNode<T> CreateRoot(DropdownTree<T> parentTree) => new DropdownNode<T>(default, null, parentTree, string.Empty, null);
 
         /// <summary>Creates a dropdown item that represents a <see cref="System.Type"/>.</summary>
         /// <param name="name">Name that will show up in the popup.</param>
@@ -35,21 +35,21 @@
         /// <param name="searchName"> A name of the node that will show up when a search is performed.</param>
         public void CreateChildItem(string name, T value, string searchName)
         {
-            var child = new SelectionNode<T>(value, this, _parentTree, name, searchName);
+            var child = new DropdownNode<T>(value, this, _parentTree, name, searchName);
             ChildNodes.Add(child);
         }
 
         /// <summary>Creates a folder that contains dropdown items.</summary>
         /// <param name="name">Name of the folder.</param>
-        /// <returns>A <see cref="SelectionNode"/> instance that represents the folder.</returns>
-        public SelectionNode<T> CreateChildFolder(string name)
+        /// <returns>A <see cref="DropdownNode"/> instance that represents the folder.</returns>
+        public DropdownNode<T> CreateChildFolder(string name)
         {
-            var child = new SelectionNode<T>(default, this, _parentTree, name, null);
+            var child = new DropdownNode<T>(default, this, _parentTree, name, null);
             ChildNodes.Add(child);
             return child;
         }
 
-        public IEnumerable<SelectionNode<T>> GetChildNodesRecursive()
+        public IEnumerable<DropdownNode<T>> GetChildNodesRecursive()
         {
             if ( ! IsRoot)
                 yield return this;
@@ -63,7 +63,7 @@
             _parentTree.SetSelectedNode(this);
         }
 
-        public SelectionNode<T> GetNextChild(SelectionNode<T> currentChild)
+        public DropdownNode<T> GetNextChild(DropdownNode<T> currentChild)
         {
             int currentIndex = ChildNodes.IndexOf(currentChild);
 
@@ -76,7 +76,7 @@
             return ChildNodes[currentIndex + 1];
         }
 
-        public SelectionNode<T> GetPreviousChild(SelectionNode<T> currentChild)
+        public DropdownNode<T> GetPreviousChild(DropdownNode<T> currentChild)
         {
             int currentIndex = ChildNodes.IndexOf(currentChild);
 
@@ -99,7 +99,7 @@
         /// </remarks>
         /// <param name="name">Name of the node to find.</param>
         /// <returns>Direct child node with the matching name or null.</returns>
-        public SelectionNode<T> FindChild(ReadOnlySpan<char> name)
+        public DropdownNode<T> FindChild(ReadOnlySpan<char> name)
         {
             for (int index = ChildNodes.Count - 1; index >= 0; --index)
             {

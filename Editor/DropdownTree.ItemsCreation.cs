@@ -6,9 +6,9 @@
 
     // Part of the class, responsible solely for filling the tree with items. Only FillTreeWithItems method is used in
     // the main part of the class.
-    public partial class SelectionTree<T>
+    public partial class DropdownTree<T>
     {
-        private void FillTreeWithItems(IList<SelectionTreeItem<T>> items)
+        private void FillTreeWithItems(IList<DropdownItem<T>> items)
         {
             if (items == null)
                 return;
@@ -17,7 +17,7 @@
                 CreateDropdownItem(item);
         }
 
-        private void CreateDropdownItem(SelectionTreeItem<T> item)
+        private void CreateDropdownItem(DropdownItem<T> item)
         {
             SplitFullItemPath(item.Path, out string folderPath, out string itemName);
             var directParentOfNewNode = folderPath.Length == 0 ? _root : CreateFoldersInPathIfNecessary(folderPath);
@@ -40,14 +40,13 @@
             }
         }
 
-        private SelectionNode<T> CreateFoldersInPathIfNecessary(string path)
+        private DropdownNode<T> CreateFoldersInPathIfNecessary(string path)
         {
             var parentNode = _root;
 
             foreach (var folderName in path.AsSpan().Split('/'))
             {
-                parentNode = parentNode.FindChild(folderName)
-                             ?? parentNode.CreateChildFolder(folderName.ToString());
+                parentNode = parentNode.FindChild(folderName) ?? parentNode.CreateChildFolder(folderName.ToString());
             }
 
             return parentNode;

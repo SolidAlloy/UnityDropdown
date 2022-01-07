@@ -1,22 +1,22 @@
 ﻿namespace UnityDropdown.Editor
 {
-    public class SelectionTreeItem<T> : SelectionTreeItem
+    public class DropdownItem<T> : DropdownItem
     {
         public readonly T Value;
 
-        public SelectionTreeItem(T value, string path, string searchName = null)
+        public DropdownItem(T value, string path, string searchName = null)
             : base(path, searchName)
         {
             Value = value;
         }
     }
 
-    public class SelectionTreeItem
+    public abstract class DropdownItem
     {
         public readonly string Path;
         public readonly string SearchName;
 
-        public SelectionTreeItem(string path, string searchName = null)
+        protected DropdownItem(string path, string searchName = null)
         {
             SearchName = searchName ?? path;
             Path = path;

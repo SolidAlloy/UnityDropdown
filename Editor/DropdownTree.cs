@@ -13,7 +13,7 @@
     /// Represents a node tree that contains folders (namespaces) and types. It is also responsible for drawing all the
     /// nodes, along with search toolbar and scrollbar.
     /// </summary>
-    public abstract class SelectionTree : IRepainter
+    public abstract class DropdownTree : IRepainter
     {
         public bool RepaintRequested;
 
@@ -24,21 +24,21 @@
         private readonly string _searchFieldControlName = GUID.Generate().ToString();
         private readonly bool _drawSearchbar;
 
-        public abstract SelectionNode SelectedNode { get; }
+        public abstract DropdownNode SelectedNode { get; }
 
         public abstract string[] SelectionPaths { get; }
 
         public bool DrawInSearchMode { get; private set; }
 
-        protected abstract IReadOnlyCollection<SelectionNode> SearchModeTree { get; }
+        protected abstract IReadOnlyCollection<DropdownNode> SearchModeTree { get; }
 
-        protected abstract SelectionNode NoneElement { get; }
+        protected abstract DropdownNode NoneElement { get; }
 
-        protected abstract IReadOnlyCollection<SelectionNode> Nodes { get; }
+        protected abstract IReadOnlyCollection<DropdownNode> Nodes { get; }
 
         public event Action SelectionChanged;
 
-        protected SelectionTree(int itemsCount, int searchbarMinItemsCount)
+        protected DropdownTree(int itemsCount, int searchbarMinItemsCount)
         {
             _drawSearchbar = itemsCount >= searchbarMinItemsCount;
             _scrollbar = new Scrollbar(this);
@@ -51,7 +51,7 @@
 
         public void ExpandAllFolders()
         {
-            foreach (SelectionNode node in EnumerateTree())
+            foreach (DropdownNode node in EnumerateTree())
                 node.Expanded = true;
         }
 
@@ -84,7 +84,7 @@
             RepaintRequested = true;
         }
 
-        protected abstract IEnumerable<SelectionNode> EnumerateTree();
+        protected abstract IEnumerable<DropdownNode> EnumerateTree();
 
         protected abstract void InitializeSearchModeTree();
 
@@ -155,7 +155,7 @@
         {
             var nodes = DrawInSearchMode ? SearchModeTree : Nodes;
 
-            foreach (SelectionNode node in nodes)
+            foreach (DropdownNode node in nodes)
                 node.DrawSelfAndChildren(0, visibleRect);
 
             HandleKeyboardEvents();

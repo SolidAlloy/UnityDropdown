@@ -6,12 +6,12 @@
     /// <summary>
     /// A node that represents the null type value. It is drawn separately from other nodes and has its own root.
     /// </summary>
-    internal class NoneElement<T> : SelectionNode<T>
+    internal class NoneElement<T> : DropdownNode<T>
     {
-        private NoneElement(SelectionNode<T> root, SelectionTree<T> parentTree)
+        private NoneElement(DropdownNode<T> root, DropdownTree<T> parentTree)
             : base(default, root, parentTree, DropdownWindow.NoneElementName, null) { }
 
-        public static NoneElement<T> Create(SelectionTree<T> parentTree)
+        public static NoneElement<T> Create(DropdownTree<T> parentTree)
         {
             var root = CreateRoot(parentTree);
             var child = new NoneElement<T>(root, parentTree);

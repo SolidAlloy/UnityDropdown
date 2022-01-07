@@ -11,10 +11,10 @@
     /// <summary>
     /// A node in the selection tree. It may be a folder or an item that represents <see cref="System.Type"/>.
     /// </summary>
-    public abstract class SelectionNode
+    public abstract class DropdownNode
     {
         protected readonly string _name;
-        private readonly SelectionNode _parentNode;
+        private readonly DropdownNode _parentNode;
         private bool _expanded;
 
         private Rect _rect;
@@ -38,13 +38,13 @@
 
         public bool IsSelected => ParentTree.SelectedNode == this;
 
-        protected abstract SelectionTree ParentTree { get; }
+        protected abstract DropdownTree ParentTree { get; }
 
-        protected abstract IReadOnlyCollection<SelectionNode> _ChildNodes { get; }
+        protected abstract IReadOnlyCollection<DropdownNode> _ChildNodes { get; }
 
         private bool IsHoveredOver => _rect.Contains(Event.current.mousePosition);
 
-        protected SelectionNode(SelectionNode parentNode, string name, string searchName)
+        protected DropdownNode(DropdownNode parentNode, string name, string searchName)
         {
             _parentNode = parentNode;
             Assert.IsNotNull(name);
@@ -52,7 +52,7 @@
             SearchName = searchName;
         }
 
-        public IEnumerable<SelectionNode> GetParentNodesRecursive(
+        public IEnumerable<DropdownNode> GetParentNodesRecursive(
             bool includeSelf)
         {
             if (includeSelf)
@@ -61,7 +61,7 @@
             if (IsRoot)
                 yield break;
 
-            foreach (SelectionNode node in _parentNode.GetParentNodesRecursive(true))
+            foreach (DropdownNode node in _parentNode.GetParentNodesRecursive(true))
                 yield return node;
         }
 
@@ -71,7 +71,7 @@
             if ( ! Expanded)
                 return;
 
-            foreach (SelectionNode childItem in _ChildNodes)
+            foreach (DropdownNode childItem in _ChildNodes)
                 childItem.DrawSelfAndChildren(indentLevel + 1, visibleRect);
         }
 
