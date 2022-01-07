@@ -1,7 +1,6 @@
 ﻿namespace UnityDropdown.Editor
 {
     public class SelectionTreeItem<T> : SelectionTreeItem
-        where T : class
     {
         public readonly T Value;
 

@@ -11,13 +11,11 @@
     internal static class Sedgewick
     {
         public static void SortInPlace<T>(IList<SelectionTreeItem<T>> input)
-            where T : class
         {
             SortInPlace(input, 0, input.Count, 0);
         }
 
         private static void SortInPlace<T>(IList<SelectionTreeItem<T>> input, int a, int n, int depth)
-            where T : class
         {
             if (n < 10)
             {
@@ -128,7 +126,6 @@
 
         // Pathological case is: strings with long common prefixes will cause long running times
         private static void InsertionSort<T>(IList<SelectionTreeItem<T>> x, int a, int n, int depth)
-            where T : class
         {
             for (int pi = a + 1; --n > 0; pi++)
             {
@@ -153,7 +150,6 @@
         }
 
         private static int MedianOf3<T>(IList<SelectionTreeItem<T>> x, int a, int b, int c, int depth)
-            where T : class
         {
             char va = CharOrNull(x[a].Path, depth);
             char vb = CharOrNull(x[b].Path, depth);
@@ -172,7 +168,6 @@
         }
 
         private static void VecSwap<T>(IList<SelectionTreeItem<T>> x, int a, int b, long n)
-            where T : class
         {
             while (n-- > 0)
             {

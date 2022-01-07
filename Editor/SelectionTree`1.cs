@@ -4,12 +4,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using SolidUtilities;
+    using UnityEngine;
 
     public partial class SelectionTree<T> : SelectionTree
-        where T : class
     {
         private readonly Action<T> _onValueSelected;
         private readonly SelectionNode<T> _root;
+        private readonly IEqualityComparer<T> _customComparer;
 
         public sealed override string[] SelectionPaths { get; }
 
@@ -29,7 +30,8 @@
             T currentValue,
             Action<T> onValueSelected,
             int searchbarMinItemsCount = 10,
-            bool hideNoneElement = true)
+            bool hideNoneElement = true,
+            IEqualityComparer<T> customComparer = null)
             : base(items.Count, searchbarMinItemsCount)
         {
             _root = SelectionNode<T>.CreateRoot(this);
@@ -41,6 +43,7 @@
 
             FillTreeWithItems(items);
 
+            _customComparer = customComparer;
             SetSelection(items, currentValue);
             _onValueSelected = onValueSelected;
 
@@ -91,7 +94,7 @@
 
             foreach (SelectionTreeItem<T> item in items)
             {
-                if (item.Value == selectedValue)
+                if ((_customComparer ?? EqualityComparer<T>.Default).Equals(selectedValue, item.Value))
                     nameOfItemToSelect = item.Path.AsSpan();
             }
 

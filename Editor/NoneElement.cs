@@ -7,10 +7,9 @@
     /// A node that represents the null type value. It is drawn separately from other nodes and has its own root.
     /// </summary>
     internal class NoneElement<T> : SelectionNode<T>
-        where T : class
     {
         private NoneElement(SelectionNode<T> root, SelectionTree<T> parentTree)
-            : base(null, root, parentTree, DropdownWindow.NoneElementName, null) { }
+            : base(default, root, parentTree, DropdownWindow.NoneElementName, null) { }
 
         public static NoneElement<T> Create(SelectionTree<T> parentTree)
         {

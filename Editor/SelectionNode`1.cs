@@ -5,7 +5,6 @@
     using System.Linq;
 
     public class SelectionNode<T> : SelectionNode
-        where T : class
     {
         public readonly T Value;
         public readonly SelectionNode<T> ParentNode;
@@ -28,7 +27,7 @@
         /// <summary>Creates a root node that does not have a parent and does not show up in the popup.</summary>
         /// <param name="parentTree">The tree this node belongs to.</param>
         /// <returns>The root node.</returns>
-        public static SelectionNode<T> CreateRoot(SelectionTree<T> parentTree) => new SelectionNode<T>(null, null, parentTree, string.Empty, null);
+        public static SelectionNode<T> CreateRoot(SelectionTree<T> parentTree) => new SelectionNode<T>(default, null, parentTree, string.Empty, null);
 
         /// <summary>Creates a dropdown item that represents a <see cref="System.Type"/>.</summary>
         /// <param name="name">Name that will show up in the popup.</param>
@@ -45,7 +44,7 @@
         /// <returns>A <see cref="SelectionNode"/> instance that represents the folder.</returns>
         public SelectionNode<T> CreateChildFolder(string name)
         {
-            var child = new SelectionNode<T>(null, this, _parentTree, name, null);
+            var child = new SelectionNode<T>(default, this, _parentTree, name, null);
             ChildNodes.Add(child);
             return child;
         }
