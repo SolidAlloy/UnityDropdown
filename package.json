@@ -1,0 +1,22 @@
+{
+  "name": "com.solidalloy.unity-dropdown",
+  "version": "1.0.0",
+  "displayName": "Unity Dropdown",
+  "description": "A better dropdown window for Unity Editor",
+  "dependencies": {
+    "com.solidalloy.util": "1.33.1",
+    "org.nuget.system.memory": "4.5.4",
+    "org.nuget.system.runtime.compilerservices.unsafe": "5.0.0"
+  },
+  "keywords": [
+    "dropdown",
+    "drop-down",
+	"generic",
+	"menu",
+	"editor"
+  ],
+  "author": {
+    "name": "SolidAlloy",
+    "url": "https://github.com/SolidAlloy/"
+  }
+}
