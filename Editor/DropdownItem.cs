@@ -20,9 +20,21 @@
     public abstract class DropdownItem
     {
         public readonly string Path;
+
+        /// <summary>
+        /// A name of the item that will appear in the dropdown list when a search is performed.
+        /// </summary>
         public readonly string SearchName;
+
         public readonly Texture Icon;
 
+        /// <summary>
+        /// Creates a new instance of DropdownItem.
+        /// </summary>
+        /// <param name="path">A path to the item, separated by '/'.</param>
+        /// <param name="icon">An optional icon for representing the item.</param>
+        /// <param name="searchName">An optional special name of the item that will appear in the dropdown list when a search is performed.
+        /// Equals to <paramref name="path"/> unless specified otherwise.</param>
         protected DropdownItem(string path, Texture icon = null, string searchName = null)
         {
             Path = path;

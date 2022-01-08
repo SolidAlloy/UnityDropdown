@@ -9,12 +9,21 @@
     /// <inheritdoc cref="DropdownMenu"/>
     public partial class DropdownMenu<T> : DropdownMenu
     {
-        private readonly Action<T> _onValueSelected;
+        /// <summary>
+        /// Action to do when a value has been selected in the menu. This is triggered only when the selection was confirmed i.e. the dropdown menu is closed,
+        /// not when the user has not decided yet and selects different items by clicking up or down arrow buttons.
+        /// </summary>
+        public event Action<T> OnValueSelected;
+
         private readonly DropdownNode<T> _root;
         private readonly IEqualityComparer<T> _customComparer;
 
         internal sealed override (string Path, bool HasIcon)[] SelectionPaths { get; }
 
+        /// <summary>
+        /// The node that is currently selected. This may be not the final choice of a user.
+        /// Subscribe to <see cref="OnValueSelected"/> or pass the action to <see cref="DropdownMenu{T}"/> constructor to receive a callback when a final value is chosen.
+        /// </summary>
         public DropdownNode<T> SelectedNode;
         internal override DropdownNode _SelectedNode => SelectedNode;
 
@@ -48,7 +57,7 @@
 
             _customComparer = customComparer;
             SetSelection(items, currentValue);
-            _onValueSelected = onValueSelected;
+            OnValueSelected = onValueSelected;
 
             SelectionPaths = new (string Path, bool HasIcon)[items.Count];
 
@@ -63,15 +72,23 @@
         public override void FinalizeSelection()
         {
             base.FinalizeSelection();
-            _onValueSelected?.Invoke(SelectedNode.Value);
+            OnValueSelected?.Invoke(SelectedNode.Value);
         }
 
+        /// <summary>
+        /// Expands all folders in the hierarchy. All the folders except for ones where the selected item is located
+        /// are closed by default when the dropdown window is first shown.
+        /// </summary>
         public void ExpandAllFolders()
         {
             foreach (var node in EnumerateNodes())
                 node.Expanded = true;
         }
 
+        /// <summary>
+        /// Enumerates the nodes in the hierarchy recursively, going from the root folders to their child folders, to the most deeply placed items.
+        /// </summary>
+        /// <returns>Collection of nodes in the hierarchy.</returns>
         [PublicAPI]
         public IEnumerable<DropdownNode<T>> EnumerateNodes() => _root.GetChildNodesRecursive();
 

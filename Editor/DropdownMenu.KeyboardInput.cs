@@ -29,7 +29,7 @@
 
         private bool OnArrowRight()
         {
-            if (SelectedNode == null || DrawInSearchMode || !SelectedNode.IsFolder || SelectedNode.Expanded)
+            if (SelectedNode == null || IsInSearchMode || !SelectedNode.IsFolder || SelectedNode.Expanded)
                 return false;
 
             SelectedNode.Expanded = true;
@@ -38,7 +38,7 @@
 
         private bool OnArrowLeft()
         {
-            if (SelectedNode == null ||DrawInSearchMode || !SelectedNode.IsFolder || !SelectedNode.Expanded)
+            if (SelectedNode == null ||IsInSearchMode || !SelectedNode.IsFolder || !SelectedNode.Expanded)
                 return false;
 
             SelectedNode.Expanded = false;
@@ -67,7 +67,7 @@
             if (_noneElement is { IsSelected: true })
                 return OnArrowDownNone();
 
-            if (DrawInSearchMode)
+            if (IsInSearchMode)
                 return OnArrowDownSearch();
 
             return OnArrowDownRegular();
@@ -138,7 +138,7 @@
 
         private bool OnArrowUp()
         {
-            if (DrawInSearchMode)
+            if (IsInSearchMode)
                 return OnArrowUpSearch();
 
             if (SelectedNode == null || SelectedNode.IsRoot)

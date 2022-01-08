@@ -13,20 +13,29 @@
     /// </summary>
     public abstract class DropdownNode
     {
+        /// <summary>
+        /// A name of the node. This may be a name of the folder if the node represents a folder, or the name of the item.
+        /// </summary>
         [PublicAPI]
         public readonly string Name;
 
+        /// <summary>
+        /// Search name of the node that shows up in the dropdown menu when items are filtered through the search field.
+        /// </summary>
         public readonly string SearchName;
 
         private readonly DropdownNode _parentNode;
         private readonly Texture _icon;
         private bool _expanded;
 
-        private Rect _rect;
+        /// <summary>
+        /// Rectangle occupied by this node.
+        /// </summary>
         public Rect Rect => _rect;
+        private Rect _rect;
 
         /// <summary>
-        /// If the node is folder, this shows whether it is expanded or closed. If the node is type item, setting this
+        /// If the node is folder, shows whether it is expanded or closed. If the node is a value item, setting this
         /// will do nothing, and its value is always false.
         /// </summary>
         public bool Expanded
@@ -35,10 +44,19 @@
             set => _expanded = value;
         }
 
+        /// <summary>
+        /// Whether this node is a folder.
+        /// </summary>
         public bool IsFolder => _ChildNodes.Count != 0;
 
+        /// <summary>
+        /// Whether this node is a root node.
+        /// </summary>
         public bool IsRoot => _parentNode == null;
 
+        /// <summary>
+        /// Whether this node is currently selected.
+        /// </summary>
         public bool IsSelected => ParentMenu._SelectedNode == this;
 
         protected abstract DropdownMenu ParentMenu { get; }
@@ -56,6 +74,11 @@
             _icon = icon;
         }
 
+        /// <summary>
+        /// Returns a collection of parent nodes of this node, starting from the immediate parent or self.
+        /// </summary>
+        /// <param name="includeSelf">Whether to include this node in the collection.</param>
+        /// <returns>A collection of parent nodes of this node, starting from the immediate parent or self.</returns>
         public IEnumerable<DropdownNode> GetParentNodesRecursive(
             bool includeSelf)
         {
@@ -69,6 +92,11 @@
                 yield return node;
         }
 
+        /// <summary>
+        /// Draws self and children nodes recursively.
+        /// </summary>
+        /// <param name="indentLevel">The indent level of the item, indicating how deep it is in the hierarchy.</param>
+        /// <param name="visibleRect">A rect of the dropdown window where items can be drown. Everything outside of the visible area need not be drawn to save resources.</param>
         public virtual void DrawSelfAndChildren(int indentLevel, Rect visibleRect)
         {
             Draw(indentLevel, visibleRect);
@@ -184,7 +212,7 @@
         private void DrawLabel(Rect indentedNodeRect)
         {
             Rect labelRect = indentedNodeRect.AlignMiddleVertically(DropdownStyle.LabelHeight);
-            string label = ParentMenu.DrawInSearchMode ? SearchName : Name;
+            string label = ParentMenu.IsInSearchMode ? SearchName : Name;
             GUIStyle style = IsSelected ? DropdownStyle.SelectedLabelStyle : DropdownStyle.DefaultLabelStyle;
             GUI.Label(labelRect, GUIContentHelper.Temp(label, _icon), style);
         }

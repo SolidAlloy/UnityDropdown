@@ -8,12 +8,22 @@
     /// <inheritdoc cref="DropdownNode"/>
     public class DropdownNode<T> : DropdownNode
     {
+        /// <summary>
+        /// The value of a dropdown node. It is null for the root node and folders.
+        /// </summary>
         public readonly T Value;
+
+        /// <summary>
+        /// The parent node of this node.
+        /// </summary>
         public readonly DropdownNode<T> ParentNode;
 
         private readonly DropdownMenu<T> _parentMenu;
         protected override DropdownMenu ParentMenu => _parentMenu;
 
+        /// <summary>
+        /// A list of child nodes this node has.
+        /// </summary>
         public readonly List<DropdownNode<T>> ChildNodes = new List<DropdownNode<T>>();
         protected override IReadOnlyCollection<DropdownNode> _ChildNodes => ChildNodes;
 
@@ -53,6 +63,10 @@
             return child;
         }
 
+        /// <summary>
+        /// Returns a collection of child nodes recursively, starting from the immediate children.
+        /// </summary>
+        /// <returns>A collection of child nodes recursively, starting from the immediate children.</returns>
         public IEnumerable<DropdownNode<T>> GetChildNodesRecursive()
         {
             foreach (var childNode in ChildNodes)
@@ -64,32 +78,6 @@
                     yield return childOfChild;
                 }
             }
-        }
-
-        public DropdownNode<T> GetNextChild(DropdownNode<T> currentChild)
-        {
-            int currentIndex = ChildNodes.IndexOf(currentChild);
-
-            if (currentIndex < 0)
-                return currentChild;
-
-            if (currentIndex == ChildNodes.Count - 1)
-                return ParentNode?.GetNextChild(this) ?? currentChild;
-
-            return ChildNodes[currentIndex + 1];
-        }
-
-        public DropdownNode<T> GetPreviousChild(DropdownNode<T> currentChild)
-        {
-            int currentIndex = ChildNodes.IndexOf(currentChild);
-
-            if (currentIndex < 0)
-                return currentChild;
-
-            if (currentIndex == 0)
-                return this;
-
-            return ChildNodes[currentIndex - 1];
         }
 
         /// <inheritdoc cref="FindChild(ReadOnlySpan{char})"/>
@@ -115,6 +103,32 @@
             }
 
             return null;
+        }
+
+        internal DropdownNode<T> GetNextChild(DropdownNode<T> currentChild)
+        {
+            int currentIndex = ChildNodes.IndexOf(currentChild);
+
+            if (currentIndex < 0)
+                return currentChild;
+
+            if (currentIndex == ChildNodes.Count - 1)
+                return ParentNode?.GetNextChild(this) ?? currentChild;
+
+            return ChildNodes[currentIndex + 1];
+        }
+
+        internal DropdownNode<T> GetPreviousChild(DropdownNode<T> currentChild)
+        {
+            int currentIndex = ChildNodes.IndexOf(currentChild);
+
+            if (currentIndex < 0)
+                return currentChild;
+
+            if (currentIndex == 0)
+                return this;
+
+            return ChildNodes[currentIndex - 1];
         }
 
         protected override void SetSelfSelected()
