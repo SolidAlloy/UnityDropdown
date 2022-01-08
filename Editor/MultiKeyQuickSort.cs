@@ -5,10 +5,10 @@
 
     /// <summary>
     /// Multi-key quicksort algorithm written by Robert Sedgewick and translated to C# by Stefan Savev.
-    /// Modified to sort TypeItems instead of strings.
+    /// Modified to sort DropdownItems instead of strings.
     /// </summary>
     /// <remarks> Source: https://www.codeproject.com/Articles/146086/Fast-String-Sort-in-C-and-F </remarks>
-    internal static class Sedgewick
+    public static class MultiKeyQuickSort
     {
         public static void SortInPlace<T>(IList<DropdownItem<T>> input)
         {

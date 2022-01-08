@@ -1,7 +1,7 @@
 ﻿namespace UnityDropdown.Editor
 {
     using System;
-    using SolidUtilities.Editor.Helpers;
+    using SolidUtilities.Editor;
     using UnityEngine;
 
     /// <summary>

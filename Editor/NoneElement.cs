@@ -8,13 +8,13 @@
     /// </summary>
     internal class NoneElement<T> : DropdownNode<T>
     {
-        private NoneElement(DropdownNode<T> root, DropdownTree<T> parentTree)
-            : base(default, root, parentTree, DropdownWindow.NoneElementName, null, null) { }
+        private NoneElement(DropdownNode<T> root, DropdownMenu<T> parentMenu)
+            : base(default, root, parentMenu, DropdownWindow.NoneElementName, null, null) { }
 
-        public static NoneElement<T> Create(DropdownTree<T> parentTree)
+        public static NoneElement<T> Create(DropdownMenu<T> parentMenu)
         {
-            var root = CreateRoot(parentTree);
-            var child = new NoneElement<T>(root, parentTree);
+            var root = CreateRoot(parentMenu);
+            var child = new NoneElement<T>(root, parentMenu);
             root.ChildNodes.Add(child);
             return child;
         }

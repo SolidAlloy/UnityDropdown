@@ -2,20 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using SolidUtilities.Editor.Helpers;
     using SolidUtilities;
+    using SolidUtilities.Editor;
     using SolidUtilities.UnityEngineInternals;
     using UnityEditor;
     using UnityEngine;
 
     /// <summary>
-    /// Represents a node tree that contains folders (namespaces) and types. It is also responsible for drawing all the
+    /// Represents a node tree that contains folders and items with values. It is also responsible for drawing all the
     /// nodes, along with search toolbar and scrollbar.
     /// </summary>
-    public abstract class DropdownTree : IRepainter
+    public abstract class DropdownMenu : IRepainter
     {
-        public bool RepaintRequested;
+        internal bool RepaintRequested;
 
         protected readonly Scrollbar _scrollbar;
         protected string _searchString = string.Empty;
@@ -24,11 +23,11 @@
         private readonly string _searchFieldControlName = GUID.Generate().ToString();
         private readonly bool _drawSearchbar;
 
-        public abstract DropdownNode SelectedNode { get; }
-
-        public abstract (string Path, bool HasIcon)[] SelectionPaths { get; }
-
         public bool DrawInSearchMode { get; private set; }
+
+        internal abstract DropdownNode _SelectedNode { get; }
+
+        internal abstract (string Path, bool HasIcon)[] SelectionPaths { get; }
 
         protected abstract IReadOnlyCollection<DropdownNode> SearchModeTree { get; }
 
@@ -36,23 +35,23 @@
 
         protected abstract IReadOnlyCollection<DropdownNode> Nodes { get; }
 
-        public event Action SelectionChanged;
+        internal event Action SelectionChanged;
 
-        protected DropdownTree(int itemsCount, int searchbarMinItemsCount)
+        protected DropdownMenu(int itemsCount, int searchbarMinItemsCount)
         {
             _drawSearchbar = itemsCount >= searchbarMinItemsCount;
             _scrollbar = new Scrollbar(this);
         }
 
+        public DropdownWindow ShowAsContext(int windowHeight = 0) => DropdownWindow.ShowAsContext(this, windowHeight);
+
+        public DropdownWindow ShowDropdown(Vector2 windowPosition, int windowHeight = 0) => DropdownWindow.ShowDropdown(this, windowPosition, windowHeight);
+
+        public Vector2 GetCenteredPosition() => DropdownWindow.GetCenteredPosition(this);
+
         public virtual void FinalizeSelection()
         {
             SelectionChanged?.Invoke();
-        }
-
-        public void ExpandAllFolders()
-        {
-            foreach (DropdownNode node in EnumerateTree())
-                node.Expanded = true;
         }
 
         public void Draw()
@@ -83,8 +82,6 @@
         {
             RepaintRequested = true;
         }
-
-        protected abstract IEnumerable<DropdownNode> EnumerateTree();
 
         protected abstract void InitializeSearchModeTree();
 
@@ -124,7 +121,7 @@
             // Without GUI.changed, the change will take place only on mouse move.
             GUI.changed = true;
             DrawInSearchMode = false;
-            _scrollbar.RequestScrollToNode(SelectedNode, Scrollbar.NodePosition.Center);
+            _scrollbar.RequestScrollToNode(_SelectedNode, Scrollbar.NodePosition.Center);
         }
 
         private void EnableSearchMode()

@@ -5,7 +5,7 @@
     using JetBrains.Annotations;
     using UnityEngine;
 
-    /// <summary>Helps to draw a popup window.</summary>
+    /// <summary>Helps draw a popup window.</summary>
     public static class PopupHelper
     {
         private const char Separator = '/';

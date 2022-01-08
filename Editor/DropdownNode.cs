@@ -1,19 +1,23 @@
 ﻿namespace UnityDropdown.Editor
 {
     using System.Collections.Generic;
-    using SolidUtilities.Editor.Helpers;
-    using SolidUtilities.Editor.Helpers.EditorIconsRelated;
+    using JetBrains.Annotations;
     using SolidUtilities;
+    using SolidUtilities.Editor;
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.Assertions;
 
     /// <summary>
-    /// A node in the selection tree. It may be a folder or an item that represents <see cref="System.Type"/>.
+    /// A node in the dropdown tree. It may be a folder or an item that represents a value.
     /// </summary>
     public abstract class DropdownNode
     {
-        protected readonly string _name;
+        [PublicAPI]
+        public readonly string Name;
+
+        public readonly string SearchName;
+
         private readonly DropdownNode _parentNode;
         private readonly Texture _icon;
         private bool _expanded;
@@ -21,10 +25,8 @@
         private Rect _rect;
         public Rect Rect => _rect;
 
-        public string SearchName { get; }
-
         /// <summary>
-        /// If the node is folder, this shows whether is is expanded or closed. If the node is type item, setting this
+        /// If the node is folder, this shows whether it is expanded or closed. If the node is type item, setting this
         /// will do nothing, and its value is always false.
         /// </summary>
         public bool Expanded
@@ -37,9 +39,9 @@
 
         public bool IsRoot => _parentNode == null;
 
-        public bool IsSelected => ParentTree.SelectedNode == this;
+        public bool IsSelected => ParentMenu._SelectedNode == this;
 
-        protected abstract DropdownTree ParentTree { get; }
+        protected abstract DropdownMenu ParentMenu { get; }
 
         protected abstract IReadOnlyCollection<DropdownNode> _ChildNodes { get; }
 
@@ -49,7 +51,7 @@
         {
             _parentNode = parentNode;
             Assert.IsNotNull(name);
-            _name = name;
+            Name = name;
             SearchName = searchName;
             _icon = icon;
         }
@@ -137,7 +139,7 @@
             else
             {
                 SetSelfSelected();
-                ParentTree.FinalizeSelection();
+                ParentMenu.FinalizeSelection();
             }
 
             Event.current.Use();
@@ -182,7 +184,7 @@
         private void DrawLabel(Rect indentedNodeRect)
         {
             Rect labelRect = indentedNodeRect.AlignMiddleVertically(DropdownStyle.LabelHeight);
-            string label = ParentTree.DrawInSearchMode ? SearchName : _name;
+            string label = ParentMenu.DrawInSearchMode ? SearchName : Name;
             GUIStyle style = IsSelected ? DropdownStyle.SelectedLabelStyle : DropdownStyle.DefaultLabelStyle;
             GUI.Label(labelRect, GUIContentHelper.Temp(label, _icon), style);
         }

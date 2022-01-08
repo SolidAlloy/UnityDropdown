@@ -2,43 +2,37 @@
 {
     using System;
     using SolidUtilities;
-    using SolidUtilities.Editor.Helpers;
+    using SolidUtilities.Editor;
     using UnityEditor;
     using UnityEngine;
 
-    public enum DropdownWindowType { Context, Popup }
+    internal enum DropdownWindowType { Context, Popup }
 
-    /// <summary>Creates a dropdown window that shows the <see cref="DropdownTree"/> elements.</summary>
+    /// <summary>Creates a dropdown window that shows the <see cref="DropdownMenu"/> elements.</summary>
     public partial class DropdownWindow : EditorWindow
     {
         public const string NoneElementName = "(None)";
 
-        private DropdownTree _dropdownTree;
+        private DropdownMenu _dropdownMenu;
 
-        public static DropdownWindow Create(DropdownTree dropdownTree, DropdownWindowType windowType, Vector2? customWindowPosition = null, int windowHeight = 0)
+        internal static DropdownWindow ShowAsContext(DropdownMenu dropdownMenu, int windowHeight = 0)
         {
             var window = CreateInstance<DropdownWindow>();
-            window.OnCreate(dropdownTree, windowHeight, GetWindowPosition(customWindowPosition, dropdownTree, windowType), windowType);
+            window.OnCreate(dropdownMenu, windowHeight, GUIUtility.GUIToScreenPoint(Event.current.mousePosition), DropdownWindowType.Context);
             return window;
         }
 
-        private static Vector2 GetWindowPosition(Vector2? customWindowPosition, DropdownTree dropdownTree, DropdownWindowType windowType)
+        internal static DropdownWindow ShowDropdown(DropdownMenu dropdownMenu, Vector2 windowPosition, int windowHeight = 0)
         {
-            if (customWindowPosition != null)
-                return customWindowPosition.Value;
-
-            return windowType switch
-            {
-                DropdownWindowType.Context => GUIUtility.GUIToScreenPoint(Event.current.mousePosition),
-                DropdownWindowType.Popup => GetCenteredPosition(dropdownTree),
-                _ => throw new NotImplementedException()
-            };
+            var window = CreateInstance<DropdownWindow>();
+            window.OnCreate(dropdownMenu, windowHeight, windowPosition, DropdownWindowType.Popup);
+            return window;
         }
 
-        private static Vector2 GetCenteredPosition(DropdownTree dropdownTree)
+        internal static Vector2 GetCenteredPosition(DropdownMenu dropdownMenu)
         {
             Vector2 dropdownPosition = EditorGUIUtilityHelper.GetMainWindowPosition().center;
-            dropdownPosition.x -= CalculateOptimalWidth(dropdownTree.SelectionPaths) / 2f;
+            dropdownPosition.x -= CalculateOptimalWidth(dropdownMenu.SelectionPaths) / 2f;
             return dropdownPosition.RoundUp();
         }
 
@@ -46,35 +40,36 @@
         /// This is basically a constructor. Since ScriptableObjects cannot have constructors,
         /// this one is called from a factory method.
         /// </summary>
-        /// <param name="dropdownTree">Tree that contains the dropdown items to show.</param>
+        /// <param name="dropdownMenu">Tree that contains the dropdown items to show.</param>
         /// <param name="windowHeight">Height of the window. If set to 0, it will be auto-adjusted.</param>
         /// <param name="windowPosition">Position of the window to set.</param>
-        private void OnCreate(DropdownTree dropdownTree, float windowHeight, Vector2 windowPosition, DropdownWindowType windowType)
+        private void OnCreate(DropdownMenu dropdownMenu, float windowHeight, Vector2 windowPosition, DropdownWindowType windowType)
         {
             ResetControl();
             wantsMouseMove = true;
-            _dropdownTree = dropdownTree;
-            _dropdownTree.SelectionChanged += Close;
-            _optimalWidth = CalculateOptimalWidth(_dropdownTree.SelectionPaths);
+            _dropdownMenu = dropdownMenu;
+            _dropdownMenu.SelectionChanged += Close;
+            _optimalWidth = CalculateOptimalWidth(_dropdownMenu.SelectionPaths);
             _preventExpandingHeight = new PreventExpandingHeight(windowHeight == 0f);
 
             _positionOnCreation = GetWindowRect(windowPosition, windowHeight);
 
-            if (windowType == DropdownWindowType.Context)
+            switch (windowType)
             {
-                // ShowAsDropDown usually shows the window under a button, but since we don't need to align the window to
-                // any button, we set buttonRect.height to 0f.
-                Rect buttonRect = new Rect(_positionOnCreation) { height = 0f };
-                ShowAsDropDown(buttonRect, _positionOnCreation.size);
-            }
-            else if (windowType == DropdownWindowType.Popup)
-            {
-                position = _positionOnCreation;
-                ShowPopup();
-            }
-            else
-            {
-                throw new Exception("Unknown window type");
+                case DropdownWindowType.Context:
+                {
+                    // ShowAsDropDown usually shows the window under a button, but since we don't need to align the window to
+                    // any button, we set buttonRect.height to 0f.
+                    Rect buttonRect = new Rect(_positionOnCreation) { height = 0f };
+                    ShowAsDropDown(buttonRect, _positionOnCreation.size);
+                    break;
+                }
+                case DropdownWindowType.Popup:
+                    position = _positionOnCreation;
+                    ShowPopup();
+                    break;
+                default:
+                    throw new Exception("Unknown window type");
             }
         }
 
@@ -123,7 +118,7 @@
                 using (EditorGUILayoutHelper.VerticalBlock(_preventExpandingHeight,
                     DropdownStyle.BackgroundColor, out float contentHeight))
                 {
-                    _dropdownTree.Draw();
+                    _dropdownMenu.Draw();
 
                     if (Event.current.type == EventType.Repaint)
                         _contentHeight = contentHeight;
@@ -135,10 +130,10 @@
 
         private void RepaintIfMouseWasUsed()
         {
-            if (Event.current.isMouse || Event.current.type == EventType.Used || _dropdownTree.RepaintRequested)
+            if (Event.current.isMouse || Event.current.type == EventType.Used || _dropdownMenu.RepaintRequested)
             {
                 Repaint();
-                _dropdownTree.RepaintRequested = false;
+                _dropdownMenu.RepaintRequested = false;
             }
         }
 

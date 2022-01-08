@@ -2,6 +2,10 @@
 {
     using UnityEngine;
 
+    /// <summary>
+    /// An item with a value and path that will be shown in a dropdown window.
+    /// </summary>
+    /// <typeparam name="T">The type of value the item holds.</typeparam>
     public class DropdownItem<T> : DropdownItem
     {
         public readonly T Value;

@@ -3,19 +3,20 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using JetBrains.Annotations;
     using SolidUtilities;
-    using UnityEngine;
 
-    public partial class DropdownTree<T> : DropdownTree
+    /// <inheritdoc cref="DropdownMenu"/>
+    public partial class DropdownMenu<T> : DropdownMenu
     {
         private readonly Action<T> _onValueSelected;
         private readonly DropdownNode<T> _root;
         private readonly IEqualityComparer<T> _customComparer;
 
-        public sealed override (string Path, bool HasIcon)[] SelectionPaths { get; }
+        internal sealed override (string Path, bool HasIcon)[] SelectionPaths { get; }
 
-        private DropdownNode<T> _selectedNode;
-        public override DropdownNode SelectedNode => _selectedNode;
+        public DropdownNode<T> SelectedNode;
+        internal override DropdownNode _SelectedNode => SelectedNode;
 
         private readonly NoneElement<T> _noneElement;
         protected override DropdownNode NoneElement => _noneElement;
@@ -25,7 +26,7 @@
 
         protected override IReadOnlyCollection<DropdownNode> Nodes => _root.ChildNodes;
 
-        public DropdownTree(
+        public DropdownMenu(
             IList<DropdownItem<T>> items,
             T currentValue,
             Action<T> onValueSelected,
@@ -41,7 +42,7 @@
                 _noneElement = NoneElement<T>.Create(this);
 
             if (sortItems)
-                Sedgewick.SortInPlace(items);
+                MultiKeyQuickSort.SortInPlace(items);
 
             FillTreeWithItems(items);
 
@@ -62,15 +63,22 @@
         public override void FinalizeSelection()
         {
             base.FinalizeSelection();
-            _onValueSelected?.Invoke(_selectedNode.Value);
+            _onValueSelected?.Invoke(SelectedNode.Value);
         }
 
-        public void SetSelectedNode(DropdownNode<T> dropdownNode) => _selectedNode = dropdownNode;
+        public void ExpandAllFolders()
+        {
+            foreach (var node in EnumerateNodes())
+                node.Expanded = true;
+        }
+
+        [PublicAPI]
+        public IEnumerable<DropdownNode<T>> EnumerateNodes() => _root.GetChildNodesRecursive();
 
         protected override void InitializeSearchModeTree()
         {
             _searchModeTree.Clear();
-            _searchModeTree.AddRange(EnumerateTreeTyped()
+            _searchModeTree.AddRange(EnumerateNodes()
                 .Where(node => node.Value != null)
                 .Select(node =>
                 {
@@ -82,15 +90,11 @@
                 .Select(x => x.item));
         }
 
-        protected override IEnumerable<DropdownNode> EnumerateTree() => EnumerateTreeTyped();
-
-        private IEnumerable<DropdownNode<T>> EnumerateTreeTyped() => _root.GetChildNodesRecursive();
-
         private void SetSelection(IList<DropdownItem<T>> items, T selectedValue)
         {
             if (selectedValue == null)
             {
-                _selectedNode = _noneElement;
+                SelectedNode = _noneElement;
                 return;
             }
 
@@ -110,7 +114,7 @@
             foreach (var part in nameOfItemToSelect.Split('/'))
                 itemToSelect = itemToSelect.FindChild(part);
 
-            _selectedNode = itemToSelect;
+            SelectedNode = itemToSelect;
             _scrollbar.RequestScrollToNode(itemToSelect, Scrollbar.NodePosition.Center);
         }
     }

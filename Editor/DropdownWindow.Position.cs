@@ -1,9 +1,8 @@
 ﻿namespace UnityDropdown.Editor
 {
     using System;
-    using SolidUtilities.Editor.Extensions;
-    using SolidUtilities.Editor.Helpers;
     using SolidUtilities;
+    using SolidUtilities.Editor;
     using UnityEngine;
 
     public partial class DropdownWindow
@@ -14,7 +13,7 @@
         private Rect _positionOnCreation;
         private bool _positionWasSetAfterCreation;
 
-        public static float CalculateOptimalWidth((string Path, bool HasIcon)[] selectionPaths)
+        private static float CalculateOptimalWidth((string Path, bool HasIcon)[] selectionPaths)
         {
             float windowWidth = PopupHelper.CalculatePopupWidth(
                 selectionPaths,

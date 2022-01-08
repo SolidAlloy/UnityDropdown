@@ -2,66 +2,68 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using JetBrains.Annotations;
     using UnityEngine;
 
+    /// <inheritdoc cref="DropdownNode"/>
     public class DropdownNode<T> : DropdownNode
     {
         public readonly T Value;
         public readonly DropdownNode<T> ParentNode;
 
-        private readonly DropdownTree<T> _parentTree;
-        protected override DropdownTree ParentTree => _parentTree;
+        private readonly DropdownMenu<T> _parentMenu;
+        protected override DropdownMenu ParentMenu => _parentMenu;
 
         public readonly List<DropdownNode<T>> ChildNodes = new List<DropdownNode<T>>();
         protected override IReadOnlyCollection<DropdownNode> _ChildNodes => ChildNodes;
 
-        protected DropdownNode(T value, DropdownNode<T> parentNode, DropdownTree<T> parentTree, string name, string searchName, Texture icon)
+        protected DropdownNode(T value, DropdownNode<T> parentNode, DropdownMenu<T> parentMenu, string name, string searchName, Texture icon)
             : base(parentNode, name, searchName, icon)
         {
             Value = value;
             ParentNode = parentNode;
-            _parentTree = parentTree;
+            _parentMenu = parentMenu;
             ParentNode = parentNode;
         }
 
         /// <summary>Creates a root node that does not have a parent and does not show up in the popup.</summary>
-        /// <param name="parentTree">The tree this node belongs to.</param>
+        /// <param name="parentMenu">The tree this node belongs to.</param>
         /// <returns>The root node.</returns>
-        public static DropdownNode<T> CreateRoot(DropdownTree<T> parentTree) => new DropdownNode<T>(default, null, parentTree, string.Empty, null, null);
+        public static DropdownNode<T> CreateRoot(DropdownMenu<T> parentMenu) => new DropdownNode<T>(default, null, parentMenu, string.Empty, null, null);
 
         /// <summary>Creates a dropdown item that represents a <see cref="System.Type"/>.</summary>
         /// <param name="name">Name that will show up in the popup.</param>
-        /// <param name="value">The value this node represents.</param>
-        /// <param name="searchName"> A name of the node that will show up when a search is performed.</param>
-        public void CreateChildItem(string name, T value, string searchName, Texture icon)
+        /// <param name="item">An item this node represents.</param>
+        /// <returns>The newly created child node.</returns>
+        [PublicAPI]
+        public DropdownNode<T> AddChild(string name, DropdownItem<T> item)
         {
-            var child = new DropdownNode<T>(value, this, _parentTree, name, searchName, icon);
+            var child = new DropdownNode<T>(item.Value, this, _parentMenu, name, item.SearchName, item.Icon);
             ChildNodes.Add(child);
+            return child;
         }
 
         /// <summary>Creates a folder that contains dropdown items.</summary>
         /// <param name="name">Name of the folder.</param>
         /// <returns>A <see cref="DropdownNode"/> instance that represents the folder.</returns>
-        public DropdownNode<T> CreateChildFolder(string name)
+        public DropdownNode<T> AddChildFolder(string name)
         {
-            var child = new DropdownNode<T>(default, this, _parentTree, name, null, null);
+            var child = new DropdownNode<T>(default, this, _parentMenu, name, null, null);
             ChildNodes.Add(child);
             return child;
         }
 
         public IEnumerable<DropdownNode<T>> GetChildNodesRecursive()
         {
-            if ( ! IsRoot)
-                yield return this;
-
-            foreach (var childNode in ChildNodes.SelectMany(node => node.GetChildNodesRecursive()))
+            foreach (var childNode in ChildNodes)
+            {
                 yield return childNode;
-        }
 
-        protected override void SetSelfSelected()
-        {
-            _parentTree.SetSelectedNode(this);
+                foreach (var childOfChild in childNode.GetChildNodesRecursive())
+                {
+                    yield return childOfChild;
+                }
+            }
         }
 
         public DropdownNode<T> GetNextChild(DropdownNode<T> currentChild)
@@ -90,6 +92,10 @@
             return ChildNodes[currentIndex - 1];
         }
 
+        /// <inheritdoc cref="FindChild(ReadOnlySpan{char})"/>
+        [PublicAPI]
+        public DropdownNode<T> FindChild(string name) => FindChild(name.AsSpan());
+
         /// <summary>
         /// Returns the direct child node with the matching name, or null if the matching node was not found.
         /// </summary>
@@ -104,11 +110,16 @@
         {
             for (int index = ChildNodes.Count - 1; index >= 0; --index)
             {
-                if (name.Equals(ChildNodes[index]._name.AsSpan(), StringComparison.Ordinal))
+                if (name.Equals(ChildNodes[index].Name.AsSpan(), StringComparison.Ordinal))
                     return ChildNodes[index];
             }
 
             return null;
+        }
+
+        protected override void SetSelfSelected()
+        {
+            _parentMenu.SelectedNode = this;
         }
     }
 }
