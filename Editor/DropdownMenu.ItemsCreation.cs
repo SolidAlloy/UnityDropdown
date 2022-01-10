@@ -13,14 +13,32 @@
             if (items == null)
                 return;
 
+            bool foundSelected = false;
+
             foreach (var item in items)
+            {
+                // DropdownMenu currently supports only a single selected value,
+                // so if multiple items are marked as selected, only the first one will be shown as selected.
+                if (item.IsSelected)
+                {
+                    if (foundSelected)
+                    {
+                        item.IsSelected = false;
+                    }
+                    else
+                    {
+                        foundSelected = true;
+                    }
+                }
+
                 CreateDropdownItem(item);
+            }
         }
 
         private void CreateDropdownItem(DropdownItem<T> item)
         {
             SplitFullItemPath(item.Path, out string folderPath, out string itemName);
-            var directParentOfNewNode = folderPath.Length == 0 ? _root : CreateFoldersInPathIfNecessary(folderPath);
+            var directParentOfNewNode = folderPath.Length == 0 ? Root : CreateFoldersInPathIfNecessary(folderPath);
             directParentOfNewNode.AddChild(itemName, item);
         }
 
@@ -42,7 +60,7 @@
 
         private DropdownNode<T> CreateFoldersInPathIfNecessary(string path)
         {
-            var parentNode = _root;
+            var parentNode = Root;
 
             foreach (var folderName in path.AsSpan().Split('/'))
             {

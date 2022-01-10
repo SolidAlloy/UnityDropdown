@@ -10,8 +10,8 @@
     {
         public readonly T Value;
 
-        public DropdownItem(T value, string path, Texture icon = null, string searchName = null)
-            : base(path, icon, searchName)
+        public DropdownItem(T value, string path, Texture icon = null, string searchName = null, bool isSelected = false)
+            : base(path, icon, searchName, isSelected)
         {
             Value = value;
         }
@@ -28,6 +28,8 @@
 
         public readonly Texture Icon;
 
+        public bool IsSelected;
+
         /// <summary>
         /// Creates a new instance of DropdownItem.
         /// </summary>
@@ -35,11 +37,12 @@
         /// <param name="icon">An optional icon for representing the item.</param>
         /// <param name="searchName">An optional special name of the item that will appear in the dropdown list when a search is performed.
         /// Equals to <paramref name="path"/> unless specified otherwise.</param>
-        protected DropdownItem(string path, Texture icon = null, string searchName = null)
+        protected DropdownItem(string path, Texture icon = null, string searchName = null, bool isSelected = false)
         {
             Path = path;
             Icon = icon;
             SearchName = searchName ?? path;
+            IsSelected = isSelected;
         }
     }
 }

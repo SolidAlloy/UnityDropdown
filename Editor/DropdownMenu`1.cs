@@ -10,13 +10,16 @@
     public partial class DropdownMenu<T> : DropdownMenu
     {
         /// <summary>
+        /// The root node that is not shown in the list but instead contains all root folders and items of the list as its <see cref="DropdownNode{T}.ChildNodes"/>.
+        /// </summary>
+        [PublicAPI]
+        public readonly DropdownNode<T> Root;
+
+        /// <summary>
         /// Action to do when a value has been selected in the menu. This is triggered only when the selection was confirmed i.e. the dropdown menu is closed,
         /// not when the user has not decided yet and selects different items by clicking up or down arrow buttons.
         /// </summary>
         public event Action<T> OnValueSelected;
-
-        private readonly DropdownNode<T> _root;
-        private readonly IEqualityComparer<T> _customComparer;
 
         internal sealed override (string Path, bool HasIcon)[] SelectionPaths { get; }
 
@@ -33,21 +36,19 @@
         private readonly List<DropdownNode<T>> _searchModeTree = new List<DropdownNode<T>>();
         protected override IReadOnlyCollection<DropdownNode> SearchModeTree => _searchModeTree;
 
-        protected override IReadOnlyCollection<DropdownNode> Nodes => _root.ChildNodes;
+        protected override IReadOnlyCollection<DropdownNode> Nodes => Root.ChildNodes;
 
         public DropdownMenu(
             IList<DropdownItem<T>> items,
-            T currentValue,
             Action<T> onValueSelected,
             int searchbarMinItemsCount = 10,
             bool sortItems = false,
-            bool hideNoneElement = true,
-            IEqualityComparer<T> customComparer = null)
+            bool showNoneElement = false)
             : base(items.Count, searchbarMinItemsCount)
         {
-            _root = DropdownNode<T>.CreateRoot(this);
+            Root = DropdownNode<T>.CreateRoot(this);
 
-            if ( ! hideNoneElement)
+            if (showNoneElement)
                 _noneElement = NoneElement<T>.Create(this);
 
             if (sortItems)
@@ -55,8 +56,10 @@
 
             FillTreeWithItems(items);
 
-            _customComparer = customComparer;
-            SetSelection(items, currentValue);
+            // A node is selected in FillTreeWithItems. If no node appeared to be selected, _noneElement is selected instead.
+            SelectedNode ??= _noneElement;
+            _scrollbar.RequestScrollToNode(SelectedNode, Scrollbar.NodePosition.Center);
+
             OnValueSelected = onValueSelected;
 
             SelectionPaths = new (string Path, bool HasIcon)[items.Count];
@@ -90,7 +93,7 @@
         /// </summary>
         /// <returns>Collection of nodes in the hierarchy.</returns>
         [PublicAPI]
-        public IEnumerable<DropdownNode<T>> EnumerateNodes() => _root.GetChildNodesRecursive();
+        public IEnumerable<DropdownNode<T>> EnumerateNodes() => Root.GetChildNodesRecursive();
 
         protected override void InitializeSearchModeTree()
         {
@@ -105,34 +108,6 @@
                 .Where(x => x.include)
                 .OrderByDescending(x => x.score)
                 .Select(x => x.item));
-        }
-
-        private void SetSelection(IList<DropdownItem<T>> items, T selectedValue)
-        {
-            if (selectedValue == null)
-            {
-                SelectedNode = _noneElement;
-                return;
-            }
-
-            ReadOnlySpan<char> nameOfItemToSelect = default;
-
-            foreach (DropdownItem<T> item in items)
-            {
-                if ((_customComparer ?? EqualityComparer<T>.Default).Equals(selectedValue, item.Value))
-                    nameOfItemToSelect = item.Path.AsSpan();
-            }
-
-            if (nameOfItemToSelect == default)
-                return;
-
-            var itemToSelect = _root;
-
-            foreach (var part in nameOfItemToSelect.Split('/'))
-                itemToSelect = itemToSelect.FindChild(part);
-
-            SelectedNode = itemToSelect;
-            _scrollbar.RequestScrollToNode(itemToSelect, Scrollbar.NodePosition.Center);
         }
     }
 }

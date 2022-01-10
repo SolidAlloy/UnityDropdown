@@ -149,7 +149,7 @@
             DrawSeparator();
         }
 
-        protected abstract void SetSelfSelected();
+        protected abstract void SetSelected();
 
         protected void HandleMouseEvents()
         {
@@ -166,7 +166,7 @@
             }
             else
             {
-                SetSelfSelected();
+                SetSelected();
                 ParentMenu.FinalizeSelection();
             }
 

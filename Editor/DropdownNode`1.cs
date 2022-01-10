@@ -49,6 +49,10 @@
         public DropdownNode<T> AddChild(string name, DropdownItem<T> item)
         {
             var child = new DropdownNode<T>(item.Value, this, _parentMenu, name, item.SearchName, item.Icon);
+
+            if (item.IsSelected)
+                child.SetSelected();
+
             ChildNodes.Add(child);
             return child;
         }
@@ -131,7 +135,7 @@
             return ChildNodes[currentIndex - 1];
         }
 
-        protected override void SetSelfSelected()
+        protected override void SetSelected()
         {
             _parentMenu.SelectedNode = this;
         }

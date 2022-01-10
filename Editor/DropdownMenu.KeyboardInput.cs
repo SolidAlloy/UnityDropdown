@@ -77,12 +77,12 @@
         {
             if (SelectedNode == null)
             {
-                if (_root.ChildNodes.Count == 0)
+                if (Root.ChildNodes.Count == 0)
                 {
                     return false;
                 }
 
-                SelectedNode = _root.ChildNodes[0];
+                SelectedNode = Root.ChildNodes[0];
                 return true;
             }
 
@@ -127,7 +127,7 @@
 
         private bool OnArrowDownNone()
         {
-            var firstItem = _root.ChildNodes.FirstOrDefault();
+            var firstItem = Root.ChildNodes.FirstOrDefault();
 
             if (firstItem == null)
                 return false;
