@@ -18,14 +18,14 @@
         internal static DropdownWindow ShowAsContext(DropdownMenu dropdownMenu, int windowHeight = 0)
         {
             var window = CreateInstance<DropdownWindow>();
-            window.OnCreate(dropdownMenu, windowHeight, GUIUtility.GUIToScreenPoint(Event.current.mousePosition), DropdownWindowType.Context);
+            window.OnCreate(dropdownMenu, windowHeight, GUIUtility.GUIToScreenPoint(Event.current.mousePosition));
             return window;
         }
 
         internal static DropdownWindow ShowDropdown(DropdownMenu dropdownMenu, Vector2 windowPosition, int windowHeight = 0)
         {
             var window = CreateInstance<DropdownWindow>();
-            window.OnCreate(dropdownMenu, windowHeight, windowPosition, DropdownWindowType.Popup);
+            window.OnCreate(dropdownMenu, windowHeight, windowPosition);
             return window;
         }
 
@@ -43,7 +43,7 @@
         /// <param name="dropdownMenu">Tree that contains the dropdown items to show.</param>
         /// <param name="windowHeight">Height of the window. If set to 0, it will be auto-adjusted.</param>
         /// <param name="windowPosition">Position of the window to set.</param>
-        private void OnCreate(DropdownMenu dropdownMenu, float windowHeight, Vector2 windowPosition, DropdownWindowType windowType)
+        private void OnCreate(DropdownMenu dropdownMenu, float windowHeight, Vector2 windowPosition)
         {
             ResetControl();
             wantsMouseMove = true;
@@ -54,23 +54,8 @@
 
             _positionOnCreation = GetWindowRect(windowPosition, windowHeight);
 
-            switch (windowType)
-            {
-                case DropdownWindowType.Context:
-                {
-                    // ShowAsDropDown usually shows the window under a button, but since we don't need to align the window to
-                    // any button, we set buttonRect.height to 0f.
-                    Rect buttonRect = new Rect(_positionOnCreation) { height = 0f };
-                    ShowAsDropDown(buttonRect, _positionOnCreation.size);
-                    break;
-                }
-                case DropdownWindowType.Popup:
-                    position = _positionOnCreation;
-                    ShowPopup();
-                    break;
-                default:
-                    throw new Exception("Unknown window type");
-            }
+            position = _positionOnCreation;
+            ShowPopup();
         }
 
         private void OnGUI()

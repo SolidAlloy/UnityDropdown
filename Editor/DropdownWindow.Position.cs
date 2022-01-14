@@ -29,8 +29,8 @@
         private Rect GetWindowRect(Vector2 windowPosition, float windowHeight)
         {
             var windowSize = new Vector2(_optimalWidth, GetWindowHeight(windowHeight));
-            windowPosition.x = GetWindowXPosition(windowPosition.x, windowSize.x);
-            windowPosition.y = GetWindowYPosition(windowPosition.y, windowSize.y);
+            windowPosition.x = Mathf.Round(GetWindowXPosition(windowPosition.x, windowSize.x));
+            windowPosition.y = Mathf.Round(GetWindowYPosition(windowPosition.y, windowSize.y));
             return new Rect(windowPosition, windowSize);
         }
 
