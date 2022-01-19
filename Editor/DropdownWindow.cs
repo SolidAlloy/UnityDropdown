@@ -1,6 +1,7 @@
 ﻿namespace UnityDropdown.Editor
 {
     using System;
+    using System.Reflection;
     using SolidUtilities;
     using SolidUtilities.Editor;
     using UnityEditor;
@@ -18,7 +19,7 @@
         internal static DropdownWindow ShowAsContext(DropdownMenu dropdownMenu, int windowHeight = 0)
         {
             var window = CreateInstance<DropdownWindow>();
-            window.OnCreate(dropdownMenu, windowHeight, GUIUtility.GUIToScreenPoint(Event.current.mousePosition));
+            window.OnCreate(dropdownMenu, windowHeight, EditorHelper.GetCurrentMousePosition());
             return window;
         }
 
