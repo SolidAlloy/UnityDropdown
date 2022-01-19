@@ -38,13 +38,16 @@
         {
             // If given less than 100f, the window will re-position to the top left corner. If given 0f on MacOS,
             // the window may not appear at all. Thus, the minimal value is 100f.
-            const float minHeightOnStart = 100f;
-            return windowHeight < 100f ? minHeightOnStart : windowHeight;
+            // The addition 1f is if the value is rounded, so that it doesn't get rounded to less than 100f.
+            const float minHeightOnStart = 101f;
+            return windowHeight < 101f ? minHeightOnStart : windowHeight;
         }
 
         private float GetWindowYPosition(float requestedYPosition, float windowHeight)
         {
-            float distanceToBottomBorder = EditorGUIUtilityHelper.GetMainWindowPosition().yMax - requestedYPosition;
+            float screenBottom = EditorGUIUtilityHelper.GetMainWindowPosition().yMax;
+            
+            float distanceToBottomBorder = screenBottom - requestedYPosition;
 
             if (distanceToBottomBorder < windowHeight)
             {

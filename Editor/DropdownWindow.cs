@@ -51,9 +51,7 @@
             _dropdownMenu.SelectionChanged += Close;
             _optimalWidth = CalculateOptimalWidth(_dropdownMenu.SelectionPaths);
             _preventExpandingHeight = new PreventExpandingHeight(windowHeight == 0f);
-
             _positionOnCreation = GetWindowRect(windowPosition, windowHeight);
-
             position = _positionOnCreation;
             ShowPopup();
         }
