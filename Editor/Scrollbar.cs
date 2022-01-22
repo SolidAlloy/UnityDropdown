@@ -19,7 +19,16 @@
         private DropdownNode _nodeToScrollTo;
         private NodePosition _nodePosition;
 
-        private static bool ScrollCannotBePerformed => Event.current.type != EventType.Repaint;
+        private static bool ScrollCannotBePerformed
+        {
+            get
+            {
+                if (Event.current == null)
+                    return true;
+                
+                return Event.current.type != EventType.Repaint;
+            }
+        }
 
         public Scrollbar(IRepainter repainter)
         {
