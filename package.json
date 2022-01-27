@@ -4,7 +4,7 @@
   "displayName": "Unity Dropdown",
   "description": "A better dropdown window for Unity Editor",
   "dependencies": {
-    "com.solidalloy.util": "1.33.1",
+    "com.solidalloy.util": "1.34.0",
     "org.nuget.system.memory": "4.5.4",
     "org.nuget.system.runtime.compilerservices.unsafe": "5.0.0"
   },
