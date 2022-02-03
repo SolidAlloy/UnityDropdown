@@ -1,6 +1,8 @@
 # Unity Dropdown
 A better-looking dropdown window for Unity Editor that can easily replace GenericMenu in your editor tools.
 
+[![openupm](https://img.shields.io/npm/v/com.solidalloy.unity-dropdown?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.solidalloy.unity-dropdown/)
+
 Unity Dropdown is a replacement for GenericMenu with a similar functionality but better visuals and more features like search bar.
 
 ![general-screenshot](/.images/general-screenshot.png)
@@ -142,7 +144,7 @@ dropdownMenu.SelectedNode = dropdownMenu.EnumerateNodes().FirstOrDefault(node =>
 - ***sortItems*** (false by default) - whether to sort items alphabetically. It sorts items very efficiently, so if you have a large number of items, this option will be better rather than sorting the items by yourself before passing them to DropdownMenu.
 - ***showNoneElement*** (false by default) - whether to show the "**None**" option in the dropdown menu. This option's value always equals to null for reference types, or to the default instance of a struct. It may be useful when the field is not always supposed to be filled with some value and is allowed to be null. It behaves a little bit differently from regular items: when the list is scrolled, it always stays on top, and it's always hidden when the user searches for an item.
 
-![none](/.images/none.gif)
+![none](.images/none.gif)
 
 ### More functionality with DropdownMenu
 
