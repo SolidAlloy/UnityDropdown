@@ -103,7 +103,8 @@ dropdownMenu.SelectedNode = dropdownMenu.EnumerateNodes().FirstOrDefault(node =>
 - ***searchbarMinItemsCount*** (10 by default) - the minimum number of items at which to show the search bar. If you want to see a search bar every time, even if there are only two items in the menu, set it to 0.
 - ***sortItems*** (false by default) - whether to sort items alphabetically. It sorts items very efficiently, so if you have a large number of items, this option will be better rather than sorting the items by yourself before passing them to DropdownMenu.
 - ***showNoneElement*** (false by default) - whether to show the "**None**" option in the dropdown menu. This option's value always equals to null for reference types, or to the default instance of a struct. It may be useful when the field is not always supposed to be filled with some value and is allowed to be null. It behaves a little bit differently from regular items: when the list is scrolled, it always stays on top, and it's always hidden when the user searches for an item.
-  ![none](/.images/none.gif)
+
+![none](/.images/none.gif)
 
 ### More functionality with DropdownMenu
 
