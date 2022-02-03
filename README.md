@@ -9,6 +9,8 @@ Unity Dropdown is a replacement for GenericMenu with a similar functionality but
 
 ## Installation
 
+:heavy_exclamation_mark: Before installing the package, please disable the **Assembly Version Validation** option in **Player Settings**.
+
 ### OpenUPM
 
 Once you have the [OpenUPM cli](https://github.com/openupm/openupm-cli#installation), run the following command:
