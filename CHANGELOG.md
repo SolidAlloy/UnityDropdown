@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/SolidAlloy/UnityDropdown/compare/1.1.0...1.1.1) (2022-02-03)
+
+
+### Bug Fixes
+
+* Fixed the error in console regarding the immutable Changelog file ([23be8fd](https://github.com/SolidAlloy/UnityDropdown/commit/23be8fde88d80d228fc7895103baef3a55c1a9d0))
+
 # [1.1.0](https://github.com/SolidAlloy/UnityDropdown/compare/1.0.0...1.1.0) (2022-02-03)
 
 
