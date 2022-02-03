@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/SolidAlloy/UnityDropdown/compare/1.0.0...1.1.0) (2022-02-03)
+
+
+### Features
+
+* Updated the SolidUtilties version ([14bc11e](https://github.com/SolidAlloy/UnityDropdown/commit/14bc11e06de439f13f667d23294c0603d791c839))
+
 # 1.0.0 (2022-02-03)
 
 

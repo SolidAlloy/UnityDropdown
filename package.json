@@ -1,6 +1,6 @@
 {
   "name": "com.solidalloy.unity-dropdown",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "Unity Dropdown",
   "description": "A better dropdown window for Unity Editor",
   "dependencies": {
