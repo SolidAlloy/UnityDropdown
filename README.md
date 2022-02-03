@@ -3,7 +3,7 @@ A better-looking dropdown window for Unity Editor that can easily replace Generi
 
 Unity Dropdown is a replacement for GenericMenu with a similar functionality but better visuals and more features like search bar.
 
-![general-screenshot](D:\UnityProjects\Packages Test\Packages\UnityDropdown\.images\general-screenshot.png)
+![general-screenshot](/.images/general-screenshot.png)
 
 ## Example of Usage
 
@@ -38,7 +38,7 @@ To create a menu, you first need to create a collection of dropdown items. The m
 
 You can replace your `GenericMenu` with a **DropdownMenu** everywhere. For example, you can use it with `EditorGUI.DropdownButton()`. The dropdown window will look like this:
 
-![example-usage](D:\UnityProjects\Packages Test\Packages\UnityDropdown\.images\example-usage.png)
+![example-usage](/.images/example-usage.png)
 
 ## More Info
 
@@ -46,7 +46,7 @@ You can replace your `GenericMenu` with a **DropdownMenu** everywhere. For examp
 
 Once the number of items pass a certain threshold (10 items by default), a search bar will show up where users can filter items by their names:
 
-![searchbar](D:\UnityProjects\Packages Test\Packages\UnityDropdown\.images\searchbar.gif)
+![searchbar](/.images/searchbar.gif)
 
 As you can see on the previous image, the items in search appeared by their full paths. If you want to change this behavior, pass a parameter called **searchName** to `DropdownItem`:
 
@@ -54,7 +54,7 @@ As you can see on the previous image, the items in search appeared by their full
 dropdownItems.Add(new DropdownItem<Type>(typeof(Archer), "Ranged/Archer", searchName: "Archer"));
 ```
 
-![searchName](D:\UnityProjects\Packages Test\Packages\UnityDropdown\.images\searchName.gif)
+![searchName](/.images/searchName.gif)
 
 You can also put icons for the items:
 
@@ -69,7 +69,7 @@ var dropdownItems = new DropdownItem<Component>[]
 };
 ```
 
-![icon](D:\UnityProjects\Packages Test\Packages\UnityDropdown\.images\icon.png)
+![icon](/.images/icon.png)
 
 To mark an item as selected, pass `selected = true` to the item's constructor:
 
@@ -103,7 +103,7 @@ dropdownMenu.SelectedNode = dropdownMenu.EnumerateNodes().FirstOrDefault(node =>
 - ***searchbarMinItemsCount*** (10 by default) - the minimum number of items at which to show the search bar. If you want to see a search bar every time, even if there are only two items in the menu, set it to 0.
 - ***sortItems*** (false by default) - whether to sort items alphabetically. It sorts items very efficiently, so if you have a large number of items, this option will be better rather than sorting the items by yourself before passing them to DropdownMenu.
 - ***showNoneElement*** (false by default) - whether to show the "**None**" option in the dropdown menu. This option's value always equals to null for reference types, or to the default instance of a struct. It may be useful when the field is not always supposed to be filled with some value and is allowed to be null. It behaves a little bit differently from regular items: when the list is scrolled, it always stays on top, and it's always hidden when the user searches for an item.
-  ![none](D:\UnityProjects\Packages Test\Packages\UnityDropdown\.images\none.gif)
+  ![none](/.images/none.gif)
 
 ### More functionality with DropdownMenu
 
