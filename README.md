@@ -5,6 +5,44 @@ Unity Dropdown is a replacement for GenericMenu with a similar functionality but
 
 ![general-screenshot](/.images/general-screenshot.png)
 
+## Installation
+
+### OpenUPM
+
+Once you have the [OpenUPM cli](https://github.com/openupm/openupm-cli#installation), run the following command:
+
+```
+openupm install com.solidalloy.unity-dropdown
+```
+
+Or if you don't have it, add the scoped registry to manifest.json with the desired dependency semantic version:
+
+```json
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.solidalloy.util",
+        "com.solidalloy.unity-dropdown",
+        "com.openupm"
+      ]
+    }
+  ],
+  "dependencies": {
+    "com.solidalloy.unity-dropdown": "1.0.0"
+  },
+```
+
+### Git URL
+
+To install the package through Package Manager, do the following:
+
+1. In Unity, open **Window** -> **Package Manager**.
+2. Press the **+** button, choose "**Add package from git URL...**"
+3. Enter "https://github.com/SolidAlloy/SolidUtilities.git" and press **Add**.
+4. Now add the main package: https://github.com/SolidAlloy/UnityDropdown.git
+
 ## Example of Usage
 
 ```csharp
