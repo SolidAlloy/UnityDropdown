@@ -64,11 +64,11 @@
 
         private bool OnArrowDown()
         {
-            if (_noneElement is { IsSelected: true })
-                return OnArrowDownNone();
-
             if (IsInSearchMode)
                 return OnArrowDownSearch();
+
+            if (_noneElement is { IsSelected: true })
+                return OnArrowDownNone();
 
             return OnArrowDownRegular();
         }
