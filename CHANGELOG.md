@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/SolidAlloy/UnityDropdown/compare/1.1.1...1.2.0) (2022-07-24)
+
+
+### Bug Fixes
+
+* Fixed the down arrow not working the first time when dropdown is in search mode ([ab49147](https://github.com/SolidAlloy/UnityDropdown/commit/ab49147c774fa6953dc9df4705b6cb3ab89f9f51))
+
+
+### Features
+
+* Switched from GUID to assembly names in asmdefs ([ad70262](https://github.com/SolidAlloy/UnityDropdown/commit/ad702625fa59322723875a33997728d72a96bc76))
+
 ## [1.1.1](https://github.com/SolidAlloy/UnityDropdown/compare/1.1.0...1.1.1) (2022-02-03)
 
 
