@@ -49,8 +49,18 @@
 
         private static GUIStyle _searchToolbarStyle;
 
-        public static GUIStyle SearchToolbarStyle =>
-            _searchToolbarStyle ?? (_searchToolbarStyle = new GUIStyle(GUI.skin.FindStyle("ToolbarSeachTextField")));
+        public static GUIStyle SearchToolbarStyle
+        {
+            get
+            {
+                #if UNITY_2022_3_OR_NEWER
+                const string styleName = "ToolbarSearchTextField";
+                #else
+                const string styleName = "ToolbarSeachTextField";
+                #endif
+                return _searchToolbarStyle ?? (_searchToolbarStyle = new GUIStyle(GUI.skin.FindStyle(styleName)));
+            }
+        }
 
         private static readonly Color HighlightedColorDarkSkin = new Color(1f, 1f, 1f, 0.028f);
         private static readonly Color HighlightedColorLightSkin = new Color(1f, 1f, 1f, 0.3f);
