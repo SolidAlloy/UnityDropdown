@@ -53,12 +53,11 @@
         {
             get
             {
-                #if UNITY_2022_3_OR_NEWER
-                const string styleName = "ToolbarSearchTextField";
-                #else
-                const string styleName = "ToolbarSeachTextField";
-                #endif
-                return _searchToolbarStyle ?? (_searchToolbarStyle = new GUIStyle(GUI.skin.FindStyle(styleName)));
+				if (_searchToolbarStyle == null) {
+					GUIStyle original = GUI.skin.FindStyle("ToolbarSearchTextField") ?? GUI.skin.FindStyle("ToolbarSeachTextField");
+					_searchToolbarStyle = new GUIStyle(original);
+				}
+                return _searchToolbarStyle;
             }
         }
 
