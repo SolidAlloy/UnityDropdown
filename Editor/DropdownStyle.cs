@@ -50,7 +50,7 @@
         private static GUIStyle _searchToolbarStyle;
 
         public static GUIStyle SearchToolbarStyle =>
-            _searchToolbarStyle ?? (_searchToolbarStyle = new GUIStyle(GUI.skin.FindStyle("ToolbarSeachTextField")));
+            _searchToolbarStyle ?? (_searchToolbarStyle = new GUIStyle(GUI.skin.FindStyle("ToolbarSearchTextField")));
 
         private static readonly Color HighlightedColorDarkSkin = new Color(1f, 1f, 1f, 0.028f);
         private static readonly Color HighlightedColorLightSkin = new Color(1f, 1f, 1f, 0.3f);
